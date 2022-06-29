@@ -133,3 +133,11 @@ json_out = {}
 #print(json_out)
 print(woolworth("chocolate",json_out))
 #coles("milk")
+
+    # Input parameters
+    # input['budget'] - '150'
+    # input['companies'] - ['COLES', 'WOOLWORTHS']
+    # input['products'] - [{name: 'carrot', min_amount: '10'}, {name: 'bananna', min_amount: '2'}]
+    # return JSON package
+def main_function(budget, companies, products):
+    pass

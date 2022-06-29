@@ -3,6 +3,7 @@ from json import dumps
 from flask_cors import CORS
 import config
 import signal
+from websites import main_function
 
 def quit_gracefully(*args):
     '''For coverage'''
@@ -32,6 +33,13 @@ def echo():
     return dumps({
         'data': data
     })
+
+@APP.route("/getProducts", methods=['POST'])
+def getProducts():
+    # Json package
+    input = request.get_json()
+    # Insert starter function in the pink curly brackets
+    return dumps(main_function(input['budget'], input['companies'], input['products']))
 
 if __name__ == "__main__":
     APP.debug = True
