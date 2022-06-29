@@ -1,4 +1,4 @@
-import json
+import json,os
 from tkinter.messagebox import NO
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -29,8 +29,10 @@ def woolworth_images(url,driver):
 
 def coles(search,json_out,num_results=5):
     url = f'https://shop.coles.com.au/a/national/everything/search/{search}?pageNumber=1'
-    path = r'C:\Users\Ryan1\Downloads\chromedriver_win32 (1)\chromedriver.exe'
-    path = r"C:\Users\Ryan1\Downloads\chromedriver_win32 (2)\chromedriver.exe"
+
+    full_path = os.path.realpath(__file__)
+    path, filename = os.path.split(full_path)
+    path = path+"\chromedriver.exe"
     driver = webdriver.Chrome(path)
     driver.get(url)
     out = driver.find_elements(By.CLASS_NAME, 'product-main-info')
@@ -73,8 +75,10 @@ def coles(search,json_out,num_results=5):
 def woolworth(search,json_out,num_results=5):
     url = f"https://www.woolworths.com.au/shop/search/products?searchTerm={search}"
     
-    path = r'C:\Users\Ryan1\Downloads\chromedriver_win32 (1)\chromedriver.exe'
-    path = r"C:\Users\Ryan1\Downloads\chromedriver_win32 (2)\chromedriver.exe"
+
+    full_path = os.path.realpath(__file__)
+    path, filename = os.path.split(full_path)
+    path = path+"\chromedriver.exe"
     driver = webdriver.Chrome(path)
     driver.get(url)
 
