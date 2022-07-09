@@ -15,6 +15,7 @@ def coles(search,json_out,driver,num_results=1):
 
     
     driver.get(url)
+    time.sleep(1)
     out = driver.find_elements(By.CLASS_NAME, 'product-main-info')
     out = [x.text for x in out]
 
@@ -29,13 +30,16 @@ def coles(search,json_out,driver,num_results=1):
         # print("\n")
         title = re.search(r'(.*)\n', i)
         title= title.group(1)
-
-        price = re.search(r'sponsored product\n(.*)\n', i)
-        if price is None:
-            price = re.search(r'.*\n.*\n(.*)', i)
-            price = price.group(1)
-        else:
-            price = price.group(1)
+        print(i)
+        price = re.search(r'(\$[0-9]*\.[0-9]*)', i)
+        price = price.group(1)
+        
+        #price = re.search(r'sponsored product\n(.*)\n', i)
+        # if price is None:
+        #     price = re.search(r'.*\n.*\n(.*)', i)
+        #     price = price.group(1)
+        # else:
+        #     price = price.group(1)
 
         iterator += 1
         quantity = re.search(r'\n(.*)\n', i)
@@ -45,24 +49,21 @@ def coles(search,json_out,driver,num_results=1):
         # bytes_img = BytesIO(response.content)
         # img = Image.open(bytes_img)
         # img.show()
+        #print(price, "PRICER")
+        #print("\n")
         TPQI.append([title,price,quantity])
         #list_json.append({'title': title, 'price': price, 'quantity': quantity})
-    TPQI.sort(key=lambda x: x[1])
+    TPQI.sort(key=lambda x: float(x[1][1:]))
     TPQI = TPQI[:num_results]
     #json_out["coles"] = TPQI
-
+    print(TPQI, "COLES")
     return TPQI
 
-def woolworth(search,json_out,num_results=5):
+def woolworth(search,json_out,driver,num_results=1):
     url = f"https://www.woolworths.com.au/shop/search/products?searchTerm={search}"
     
-
-    full_path = os.path.realpath(__file__)
-    path, filename = os.path.split(full_path)
-    path = path+"\chromedriver.exe"
-    driver = webdriver.Chrome(path)
     driver.get(url)
-
+    time.sleep(2)
     out = driver.find_elements(By.CLASS_NAME, 'shelfProductTile-information')
     out = [x.text for x in out]
     
@@ -76,26 +77,34 @@ def woolworth(search,json_out,num_results=5):
     for i in out:
         title = re.search(r'(.*)\n', i)
         title= title.group(1)
-
-        dollar = re.search(r'\$(.*)', i)
-        dollar = dollar.group(1)
-
+        #print(i)
+        print("\n")
+        try:
+            dollar = re.search(r'\$(.*)\n\.', i)
+            dollar = dollar.group(1)
+        except:
+            continue
         cents = re.search(r'\.\n(.*)', i)
         cents = cents.group(1) 
         
         price = "$"+dollar + "." + cents
 
         dpg = re.search(r'\n(.*)$', i)
-        dpg = dpg.group(0)
 
+        # try:
+        #     dpg = re.search(r'\n\$.* / .*', i)
+        #     dpg = dpg.group(0)
+        # except:
+        #     dpg = "EACH"
 
         try:
-            dpq = re.search(r'\$(.*) / ([0-9]*)([A-Za-z]*)$', dpg)
+            dpq = re.search(r'\$(.*) / ([0-9]*)([A-Za-z]*)$', i)
             ppq = float(dpq.group(1))
             qty = float(dpq.group(2))
             units = dpq.group(3)         
 
-            quantity = str(int(float(price[1:])/ppq * qty)) + units
+            quantity = str(float(price[1:])/ppq * qty) + units
+            quantity = dpq.group(0)
         except:
             quantity = "N/A"
             dpq = "N/A"
@@ -104,34 +113,48 @@ def woolworth(search,json_out,num_results=5):
         # response = requests.get(x)
         # print(x)
         # bytes_img = BytesIO(response.content)
+        #print(i)
         TPQI.append([title,price,quantity])
         iterator += 1
 
-    TPQI.sort(key=lambda x: x[1])
+    TPQI.sort(key=lambda x: float(x[1][1:]))
+    print(TPQI)
     TPQI = TPQI[:num_results] 
-    json_out["woolworth"] = TPQI 
-    return json_out
+    print(TPQI,"WOOLWORTHS")
+    return TPQI
 
 def minimize(products, budget, companies, prices):
 
-    obj = []
-    obj2 = []
-    for x in json_out:
-        obj.append(-1*x['price'])
-        obj2.append(x['price'])
+    obj = [-1*x for x in prices]
     
     lhs_ineq = []
+    for x in range(len(products)):
+        check = []
+        for i in range(len(products)):
+            if i == x:
+                check.append(-1)
+            else:
+                check.append(0)
+        lhs_ineq.append(check)
+    lhs_ineq.append(prices)
+
+    print(lhs_ineq,"LHS")
     rhs_ineq = []
     for x in products:
-        rhs_ineq.append(-1*x['min_amount'])
+        rhs_ineq.append(-1*int(x['min_amount']))
+    rhs_ineq.append(int(budget))
 
-    lhs_ineq = [[-1,0],[0,-1],obj2]
-    rhs_ineq = [-1*10,-1*2,budget]
+    print(rhs_ineq,"RHS")
+
+
+    #lhs_ineq = [[-1,0],[0,-1],obj2]
+    #rhs_ineq = [-1*10,-1*2,budget]
 
     opt = linprog(c=obj, A_ub=lhs_ineq, b_ub=rhs_ineq, method="revised simplex")
     print(opt)
+    return opt
 
-#minimize(1,1,1)
+
 
 json_out = {}
 #json_out = (coles("chocolate",json_out))
@@ -156,18 +179,50 @@ def main_function(budget, companies, products):
     path, filename = os.path.split(full_path)
     path = path+"\chromedriver.exe"
     driver = webdriver.Chrome(path)
-    for company in companies:
-        if company == "COLES":
-            for x in products:
-                prod = x['name']
-                TPQI = coles(prod,json_out,driver)[0]
-                price = TPQI[1]
-                 
-                #json_out[company] = json_out.get(company, []).append(TPQI)
+    abo = False
+    if abo == True:
+        for company in companies:
+            if company == "COLES":
+                prices = []
+                for x in products:
+                    prod = x['name']
+                    TPQI = coles(prod,json_out,driver)[0]
+                    price = float(TPQI[1][1:])
+                    prices.append(price)
+                minimize(products,budget,companies,prices)
+                    #json_out[company] = json_out.get(company, []).append(TPQI)
 
-        elif company == "WOOLWORTHS":
-            for x in products:
-                prod = x['name']
+            elif company == "WOOLWORTHS": 
+                for x in products:
+                    prod = x['name']
                 #json_out = woolworth(prod,json_out)
-    
-main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'bananna', "min_amount": '2'}])
+    if abo == False:
+        for company in companies:
+            if company == "COLES":
+                json_out["COLES"] = {}
+                for x in products:
+                    prod = x['name']
+                    TPQI = coles(prod,json_out,driver)
+                    print(TPQI)
+                    price = TPQI[0][1]
+                    json_out["COLES"][prod] = TPQI
+            elif company == "WOOLWORTHS":
+                json_out["WOOLWORTHS"] = {}
+                for x in products:
+                    prod = x['name']
+                    TPQI = woolworth(prod,json_out,driver)
+                    print(TPQI)
+                    price = TPQI[0][1]
+                    #print(TPQI)
+                    json_out["WOOLWORTHS"][prod] = TPQI
+
+
+        for k,v in json_out.items():
+            print(k)       
+            print("              ")
+            for k2,v2 in v.items():
+                print(k2)
+                print(v2)
+                print("              ") 
+    return json_out
+main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])
