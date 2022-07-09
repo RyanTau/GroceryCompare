@@ -2,6 +2,7 @@
 #from lib2to3.pgen2 import driver
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 import  re, time,os
 #requests, urllib,
 import numpy as np
@@ -30,21 +31,17 @@ def coles(search,json_out,driver,num_results=1):
         # print("\n")
         title = re.search(r'(.*)\n', i)
         title= title.group(1)
-        print(i)
+        #print(i)
         price = re.search(r'(\$[0-9]*\.[0-9]*)', i)
         price = price.group(1)
         
-        #price = re.search(r'sponsored product\n(.*)\n', i)
-        # if price is None:
-        #     price = re.search(r'.*\n.*\n(.*)', i)
-        #     price = price.group(1)
-        # else:
-        #     price = price.group(1)
 
         iterator += 1
-        quantity = re.search(r'\n(.*)\n', i)
-        quantity = quantity.group(1)
-
+        try:
+            quantity = re.search(r'\n(.*)\n', i)
+            quantity = quantity.group(1)
+        except:
+            continue
         # response = requests.get(x)
         # bytes_img = BytesIO(response.content)
         # img = Image.open(bytes_img)
@@ -56,7 +53,7 @@ def coles(search,json_out,driver,num_results=1):
     TPQI.sort(key=lambda x: float(x[1][1:]))
     TPQI = TPQI[:num_results]
     #json_out["coles"] = TPQI
-    print(TPQI, "COLES")
+    #print(TPQI, "COLES")
     return TPQI
 
 def woolworth(search,json_out,driver,num_results=1):
@@ -76,9 +73,8 @@ def woolworth(search,json_out,driver,num_results=1):
     iterator = 0
     for i in out:
         title = re.search(r'(.*)\n', i)
-        title= title.group(1)
+        title= title.group(1).strip(" Each")
         #print(i)
-        print("\n")
         try:
             dollar = re.search(r'\$(.*)\n\.', i)
             dollar = dollar.group(1)
@@ -118,9 +114,9 @@ def woolworth(search,json_out,driver,num_results=1):
         iterator += 1
 
     TPQI.sort(key=lambda x: float(x[1][1:]))
-    print(TPQI)
+    #print(TPQI)
     TPQI = TPQI[:num_results] 
-    print(TPQI,"WOOLWORTHS")
+    #print(TPQI,"WOOLWORTHS")
     return TPQI
 
 def minimize(products, budget, companies, prices):
@@ -178,7 +174,10 @@ def main_function(budget, companies, products):
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
     path = path+"\chromedriver.exe"
+    #options = Options()
+    #options.headless = True
     driver = webdriver.Chrome(path)
+
     abo = False
     if abo == True:
         for company in companies:
@@ -203,30 +202,60 @@ def main_function(budget, companies, products):
                 for x in products:
                     prod = x['name']
                     TPQI = coles(prod,json_out,driver)
-                    print(TPQI)
+                    #print(TPQI)
                     price = TPQI[0][1]
-                    json_out["COLES"][prod] = TPQI
+                    json_out["COLES"][prod] = TPQI[0]
             elif company == "WOOLWORTHS":
                 json_out["WOOLWORTHS"] = {}
                 for x in products:
                     prod = x['name']
                     TPQI = woolworth(prod,json_out,driver)
-                    print(TPQI)
+                    #print(TPQI)
                     price = TPQI[0][1]
                     #print(TPQI)
-                    json_out["WOOLWORTHS"][prod] = TPQI
+                    json_out["WOOLWORTHS"][prod] = TPQI[0]
 
+        final_out = {}
+        #{'Woolworths': [ ['Woolworths Chickpeas No Added Salt 420g', '$0.80', '$0.19 / 100G']], 'Coles': [['Coles Pink And White Marshmallows', '$1.95', '150g everyday product']], "USED": 100, "UNUSED": 200}
+        #print(json_out)
+        used = 0
+        
+        next = 0
+        if len(companies) == 2:
+            COLES = json_out["COLES"]
+            WOOLWORTHS = json_out["WOOLWORTHS"]
+            for k,v in COLES.items():
+                if k in WOOLWORTHS:
+                    cur_wool = float(WOOLWORTHS[k][1][1:])
+                    cur_cole = float(COLES[k][1][1:])
+                    amount = float(products[next]['min_amount'])
+                    print(k, amount)
+                    if cur_wool <= cur_cole:
+                        final_out["Woolworths"] = final_out.get("Woolworths",{})
+                        final_out["Woolworths"][k] = WOOLWORTHS[k]
+                        #final_out["Woolworths"].append(WOOLWORTHS[k])
+                        used += cur_wool*amount
+                    else:
+                        
+                        final_out["Coles"] = final_out.get("Coles",{})
+                        final_out["Coles"][k] = COLES[k]
+                        #final_out["Coles"].append(COLES[k])
+                        used += cur_cole*amount
+                    #print(cur_wool)
+                    #print(cur_cole)
+                next = next +1
+        else:
+            for k,v in json_out.items():
+                for k2,v2 in v.items():    
+                    used += float(v2[1][1:])*float(products[next]['min_amount'])
+            final_out = json_out
+    final_out["USED"] = used
+    final_out["UNUSED"] = budget - used
+    print(final_out)
 
-        for k,v in json_out.items():
-            print(k)       
-            print("              ")
-            for k2,v2 in v.items():
-                print(k2)
-                print(v2)
-                print("              ") 
-    return json_out
+    return final_out
 
 if __name__ == '__main__':
-    main_function("1000",["WOOLWORTHS"],[{"name": 'Apple', "min_amount": '5'}, {"name": 'Orange', "min_amount": '10'}])
+    #main_function("1000",["COLES", "WOOLWORTHS"],[{"name": 'Apple', "min_amount": '5'}, {"name": 'Orange', "min_amount": '10'}])
 
-    # main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])
+    main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])
