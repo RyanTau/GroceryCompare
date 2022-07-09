@@ -225,4 +225,8 @@ def main_function(budget, companies, products):
                 print(v2)
                 print("              ") 
     return json_out
-main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])
+
+if __name__ == '__main__':
+    main_function("1000",["WOOLWORTHS"],[{"name": 'Apple', "min_amount": '5'}, {"name": 'Orange', "min_amount": '10'}])
+
+    # main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])

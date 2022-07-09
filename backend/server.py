@@ -34,12 +34,17 @@ def echo():
         'data': data
     })
 
-@APP.route("/getProducts", methods=['POST'])
+# products [{itemName: "", min: "1"}]
+@APP.route("/calcProducts", methods=['POST'])
 def getProducts():
     # Json package
     input = request.get_json()
+    print(input)
+    return dumps(
+        main_function(input['budget'], input['companies'], input['products'])
+    )
     # Insert starter function in the pink curly brackets
-    return dumps(main_function(input['budget'], input['companies'], input['products']))
+    # return dumps(main_function(input['budget'], input['companies'], input['products']))
 
 if __name__ == "__main__":
     APP.debug = True
