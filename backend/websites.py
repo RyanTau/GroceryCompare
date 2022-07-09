@@ -1,12 +1,12 @@
-import json
-from lib2to3.pgen2 import driver
-from bs4 import BeautifulSoup
+
+#from lib2to3.pgen2 import driver
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import requests, urllib, re, time,os
+import  re, time,os
+#requests, urllib,
 import numpy as np
-from PIL import Image
-from io import BytesIO
+# from PIL import Image
+# from io import BytesIO
 from scipy.optimize import linprog
 
 
