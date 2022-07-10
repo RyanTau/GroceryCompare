@@ -18,7 +18,7 @@ def coles(search,json_out,driver,num_results=1):
     driver.get(url)
     time.sleep(1)
     out = driver.find_elements(By.CLASS_NAME, 'product-main-info')
-    out = [x.text for x in out]
+    out = [x .text for x in out]
 
     #out_img =driver.find_elements(By.XPATH,r"//div[@class='product-image-container']//img")
     #out_img = [x.get_attribute('src') for x in out_img]
@@ -233,16 +233,19 @@ def main_function(budget, companies, products):
                     cur_cole = float(COLES[k][1][1:])
                     amount = float(products[next]['min_amount'])
                     print(k, amount)
+
                     if cur_wool <= cur_cole:
                         final_out["Woolworths"] = final_out.get("Woolworths",{})
-                        final_out["Woolworths"][k] = WOOLWORTHS[k]
-                        #final_out["Woolworths"].append(WOOLWORTHS[k])
+                        final_out["Woolworths"][k] = WOOLWORTHS[k]  
+                        final_out["Woolworths"][k].append(amount)
+                        print(WOOLWORTHS[k], ' GUKYGJH')
+                        #.append(amount)
                         used += cur_wool*amount
                     else:
-                        
                         final_out["Coles"] = final_out.get("Coles",{})
                         final_out["Coles"][k] = COLES[k]
-                        #final_out["Coles"].append(COLES[k])
+                        final_out["Coles"][k].append(amount)
+                        print(COLES[k], ' GUKYGJH')
                         used += cur_cole*amount
                     #print(cur_wool)
                     #print(cur_cole)
@@ -251,16 +254,23 @@ def main_function(budget, companies, products):
             for k,v in json_out.items():
                 for k2,v2 in v.items():    
                     used += float(v2[1][1:])*float(products[next]['min_amount'])
+                    v2.append(products[next]['min_amount'])
+                    #final_out[k][k2] = v2
             final_out = json_out
     final_out["USED"] = used
-    final_out["UNUSED"] = budget - used
+    if budget - used < 0:
+        unused = -1
+    else:
+        unused = budget - used
+    final_out["UNUSED"] = unused
     print(final_out)
 
     return final_out
 
 if __name__ == '__main__':
     #main_function("1000",["COLES", "WOOLWORTHS"],[{"name": 'Apple', "min_amount": '5'}, {"name": 'Orange', "min_amount": '10'}])
-    {'budget': '1000', 'companies': ['COLES', 'WOOLWORTHS'], 'products': [{'name': 'Apple', 'min_amount': '5'}, {'name': 'Orange', 'min_amount': '10'}]}
 
-    # main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])
+    main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])
+    '''
     main_function(100,["COLES","WOOLWORTHS"],[{"name": 'Apple', "min_amount": '10'}, {"name": 'Orange', "min_amount": '2'}])
+'''
