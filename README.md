@@ -18,4 +18,11 @@ If your version is not 103,
     2) Download the version that matches your Chrome browser
     3) replace the current selenium webdriver file with the one you downloaded
 
+For the Frontend, It is a React App. You must have NPM installed on your computer. To start the frontend you:
+    1) Goto the frontend folder
+    2) Type 'npm install' to install all required dependencies. 
+    3) Type 'npm start' to start the frontend. 
 
+To start the whole app, 
+    1) Start the server.py file in the backend folder.
+    2) Move to the frontend folder and type in 'npm start'.
