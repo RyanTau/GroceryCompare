@@ -42,9 +42,13 @@ def getProducts():
     print(input)
     return dumps(
         main_function(input['budget'], input['companies'], input['products'])
-        # 'budget': input['budget'],
-        # 'companies': input['companies'],
-        # 'products': input['products']
+        # {
+        #     'Coles': {
+        #         'Apple': ['0', 'test', 'test', 'test']
+        #     },
+        #     'UNUSED': 100,
+        #     'USED': 50
+        # }
     )
    
     # Insert starter function in the pink curly brackets

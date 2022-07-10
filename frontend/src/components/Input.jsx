@@ -7,11 +7,11 @@ const borderStyle = {
   'borderRadius':'1px',
   'justifyContent':'center',
   'width': '800px',
-  'padding': '20px',
+  'padding': '30px',
   'position': 'absolute',
   'left': '50%',
   'top': '50%',
-  'margin-right': '-50%',
+  'marginRight': '-50%',
   'transform': 'translate(-50%, -50%)',
   'display':'flex',
   'flexDirection': 'column', 
@@ -27,6 +27,17 @@ const checkBoxStyle = {
   'flex':'1',
 }
 
+const buttonContainer = {
+  'marginTop': '40px',
+}
+
+const buttonsStyle = {
+  'margin': '0 20px 0 20px',
+}
+
+const headingText = {
+  'textAlign': 'left',
+}
 
 // # Input parameters
 // # input['budget'] - '150'
@@ -41,21 +52,17 @@ const Input = ({ setData }) => {
 
   const addItem = () => {
     const newItems = [...items];
-    console.log(newItems);
     newItems.push({name: "", min_amount: 0});
-    console.log(newItems);
     setItems(newItems);
   };
 
   const updateItem = (item, index) => {
-    console.log(item);
     const newItems = [...items];
     newItems[index]["name"] = item;
     setItems(newItems);
   };
 
   const updateMin = (min, index) => {
-    console.log(min);
     const newItems = [...items];
     newItems[index]["min_amount"] = min;
     setItems(newItems);
@@ -81,7 +88,6 @@ const Input = ({ setData }) => {
       companies.push("WOOLWORTHS");
     }
 
-    console.log(companies);
     const r = await fetch(url, {
       method:'POST',
       headers : {
@@ -95,8 +101,6 @@ const Input = ({ setData }) => {
     });
     if (r.ok) {
       const data = await r.json();
-      console.log(data);
-      console.log(setData);
       setData(data);
     } else {
       console.log('Uncaught Error');
@@ -118,33 +122,33 @@ const Input = ({ setData }) => {
   return (
     <>
       <div style={borderStyle}>
-        <h1>Input Calculator</h1>
-        <p>Set budget, current budget = {budget}</p>
+        <h1>Grocery Calculator</h1>
+        <p>Current budget = {budget}</p>
         <input type="number" onChange={e => setBudget(e.target.value)} placeholder='Enter budget amount'></input>
-        <p>Available Outlets</p>
+        <div style={headingText}>
+          <h3>Available Outlets:</h3>
+        </div>
         <div style={checkBoxContainer}>
           <div style={checkBoxStyle}>
-            <p>Woolworths</p>
-            <input type="checkbox" checked={woolies} onClick={() => setWoolies(!woolies)}></input>
+            <span>Woolworths: <input type="checkbox" checked={woolies} onClick={() => setWoolies(!woolies)}></input></span>
           </div>
           <div style={checkBoxStyle}>
-            <p>Coles</p>
-            <input type="checkbox" checked={coles} onClick={() => setColes(!coles)}></input>
+            <span>Coles: <input type="checkbox" checked={coles} onClick={() => setColes(!coles)}></input></span>
           </div>
         </div>
         <div>
-          <p>List of Items:</p>
+          <div style={headingText}>
+            <h3>List of Items:</h3>
+          </div>
           {items.map((item, index) => {
-              return (
-                <div key={`${index}`}>
-                  <span>Item{`${index}`}: <ItemTab index={index} updateItem={updateItem} updateMin={updateMin}></ItemTab></span>
-                </div>
-              )
+            return (
+              <ItemTab index={index} updateItem={updateItem} updateMin={updateMin}></ItemTab>
+            )
           })}
         </div>
-        <div>
-          <button onClick={addItem}>Add New Item</button>
-          <button onClick={startCalc}>Submit Items</button>
+        <div style={buttonContainer}>
+          <button style={buttonsStyle} onClick={addItem}>Add New Item</button>
+          <button style={buttonsStyle} onClick={startCalc}>Submit Items</button>
         </div>
       </div>
       
