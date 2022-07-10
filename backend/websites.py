@@ -76,8 +76,7 @@ def woolworth(search,json_out,driver,num_results=1):
         title = re.search(r'(.*)\n', i)
         if (title == None):
             continue
-        title= title.group(1).strip(" Each")
-        #print(i)
+        title= title.group(1).replace("Each", "")
         try:
             dollar = re.search(r'\$(.*)\n\.', i)
             dollar = dollar.group(1)
