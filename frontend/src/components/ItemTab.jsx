@@ -9,8 +9,6 @@ const ItemTab = ({ index, updateItem, updateMin }) => {
     <div key={`${index}`} className="item-tab" style={tabStyle}>
       <input type="text" placeholder="Item here" onChange={e => updateItem(e.target.value, index)}></input>
       <input type="number" placeholder="Minimum Quantity" onChange={e => updateMin(e.target.value, index)}></input>
-      <button>Up</button>
-      <button>Down</button>
     </div>
   );
 };
