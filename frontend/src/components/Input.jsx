@@ -1,9 +1,32 @@
 import React from 'react';
 import ItemTab from './ItemTab';
 
-const checkBoxStyle = {
+
+const borderStyle = {
+  'border':'solid',
+  'borderRadius':'1px',
+  'justifyContent':'center',
+  'width': '800px',
+  'padding': '20px',
+  'position': 'absolute',
+  'left': '50%',
+  'top': '50%',
+  'margin-right': '-50%',
+  'transform': 'translate(-50%, -50%)',
   'display':'flex',
+  'flexDirection': 'column', 
+  'justifyContent': 'center',
+  'textAlign': 'center'
 }
+
+const checkBoxContainer = {
+  'display': 'flex',
+}
+
+const checkBoxStyle = {
+  'flex':'1',
+}
+
 
 // # Input parameters
 // # input['budget'] - '150'
@@ -94,29 +117,37 @@ const Input = ({ setData }) => {
 
   return (
     <>
-      <h1>Input Calculator AAA</h1>
-      <p>Set budget, current budget = {budget}</p>
-      <input type="number" onChange={e => setBudget(e.target.value)}></input>
-      <div style={checkBoxStyle}>
-        <div>
-          <p>Woolworths</p>
-          <input type="checkbox" checked={woolies} onClick={() => setWoolies(!woolies)}></input>
+      <div style={borderStyle}>
+        <h1>Input Calculator</h1>
+        <p>Set budget, current budget = {budget}</p>
+        <input type="number" onChange={e => setBudget(e.target.value)} placeholder='Enter budget amount'></input>
+        <p>Available Outlets</p>
+        <div style={checkBoxContainer}>
+          <div style={checkBoxStyle}>
+            <p>Woolworths</p>
+            <input type="checkbox" checked={woolies} onClick={() => setWoolies(!woolies)}></input>
+          </div>
+          <div style={checkBoxStyle}>
+            <p>Coles</p>
+            <input type="checkbox" checked={coles} onClick={() => setColes(!coles)}></input>
+          </div>
         </div>
         <div>
-          <p>Coles</p>
-          <input type="checkbox" checked={coles} onClick={() => setColes(!coles)}></input>
+          <p>List of Items:</p>
+          {items.map((item, index) => {
+              return (
+                <div key={`${index}`}>
+                  <span>Item{`${index}`}: <ItemTab index={index} updateItem={updateItem} updateMin={updateMin}></ItemTab></span>
+                </div>
+              )
+          })}
+        </div>
+        <div>
+          <button onClick={addItem}>Add New Item</button>
+          <button onClick={startCalc}>Submit Items</button>
         </div>
       </div>
-      <p>List of Items:</p>
-      {items.map((item, index) => {
-          return (
-            <div key={`${index}`}>
-              <ItemTab index={index} updateItem={updateItem} updateMin={updateMin}></ItemTab><span>item: {item["item"]}, quantity: {item["min_amount"]}</span>
-            </div>
-          )
-      })};
-      <button onClick={addItem}>Add New Item</button>
-      <button onClick={startCalc}>Submit Items</button>
+      
     </>
   )
 };

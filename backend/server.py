@@ -39,6 +39,7 @@ def echo():
 def getProducts():
     # Json package
     input = request.get_json()
+    print(input)
     return dumps(
         main_function(input['budget'], input['companies'], input['products'])
         # 'budget': input['budget'],
