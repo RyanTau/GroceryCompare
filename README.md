@@ -24,5 +24,5 @@ For the Frontend, It is a React App. You must have NPM installed on your compute
     3) Type 'npm start' to start the frontend.   
 
 To start the whole app:     
-    1) Start the server.py file in the backend folder.
-    2) Move to the frontend folder and type in 'npm start'.
+    1) Start the server.py file in the backend folder.  
+    2) Move to the frontend folder and type in 'npm start'.  
