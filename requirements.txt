@@ -3,3 +3,5 @@ flask_cors==3.0.10
 numpy==1.22.3
 scipy==1.8.1
 selenium==4.3.0
+npm@8.12
+nodeJSv18.5.0

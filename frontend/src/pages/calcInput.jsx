@@ -8,19 +8,12 @@ const checkBoxStyle = {
 }
 
 const Home = () => {
-  React.useEffect(() => {
-    updateData(null);
-  }, []);
   const [reqData, setReqData] = React.useState(null);
-
-  const updateData = (data) => {
-    setReqData(data);
-  };
 
   return (
     <>
-      {reqData == null && <Input setData={setReqData}></Input>}
-      {reqData != null && <Results key={reqData} data={reqData}></Results>}
+      {reqData === null && <Input setData={setReqData}></Input>}
+      {reqData !== null && <Results key={reqData} data={reqData}></Results>}
     </>
   )
 };
