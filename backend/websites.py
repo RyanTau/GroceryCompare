@@ -261,12 +261,12 @@ def main_function(budget, companies, products):
                     v2.append(int(products[next]['min_amount']))
                     #final_out[k][k2] = v2
             final_out = json_out
-    final_out["USED"] = used
+    final_out["USED"] = round(used,2)
     if budget - used < 0:
-        unused = -1
+        unused = -1q
     else:
         unused = budget - used
-    final_out["UNUSED"] = unused
+    final_out["UNUSED"] = round(unused,2)
     print(final_out)
 
     return final_out
