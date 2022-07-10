@@ -60,6 +60,7 @@ def woolworth(search,json_out,driver,num_results=1):
     url = f"https://www.woolworths.com.au/shop/search/products?searchTerm={search}"
     
     driver.get(url)
+    #change sleep time
     time.sleep(2)
     out = driver.find_elements(By.CLASS_NAME, 'shelfProductTile-information')
     out = [x.text for x in out]
@@ -212,7 +213,7 @@ def main_function(budget, companies, products):
                 for x in products:
                     prod = x['name']
                     TPQI = woolworth(prod,json_out,driver)
-                    #print(TPQI)
+                    print(TPQI, "THIS THIS")
                     price = TPQI[0][1]
                     #print(TPQI)
                     json_out["WOOLWORTHS"][prod] = TPQI[0]
@@ -259,5 +260,7 @@ def main_function(budget, companies, products):
 
 if __name__ == '__main__':
     #main_function("1000",["COLES", "WOOLWORTHS"],[{"name": 'Apple', "min_amount": '5'}, {"name": 'Orange', "min_amount": '10'}])
+    {'budget': '1000', 'companies': ['COLES', 'WOOLWORTHS'], 'products': [{'name': 'Apple', 'min_amount': '5'}, {'name': 'Orange', 'min_amount': '10'}]}
 
-    main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])
+    # main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])
+    main_function(100,["COLES","WOOLWORTHS"],[{"name": 'Apple', "min_amount": '10'}, {"name": 'Orange', "min_amount": '2'}])
