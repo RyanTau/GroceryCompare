@@ -231,7 +231,7 @@ def main_function(budget, companies, products):
                 if k in WOOLWORTHS:
                     cur_wool = float(WOOLWORTHS[k][1][1:])
                     cur_cole = float(COLES[k][1][1:])
-                    amount = float(products[next]['min_amount'])
+                    amount = int(products[next]['min_amount'])
                     print(k, amount)
 
                     if cur_wool <= cur_cole:
@@ -254,7 +254,7 @@ def main_function(budget, companies, products):
             for k,v in json_out.items():
                 for k2,v2 in v.items():    
                     used += float(v2[1][1:])*float(products[next]['min_amount'])
-                    v2.append(products[next]['min_amount'])
+                    v2.append(int(products[next]['min_amount']))
                     #final_out[k][k2] = v2
             final_out = json_out
     final_out["USED"] = used
@@ -271,6 +271,7 @@ if __name__ == '__main__':
     #main_function("1000",["COLES", "WOOLWORTHS"],[{"name": 'Apple', "min_amount": '5'}, {"name": 'Orange', "min_amount": '10'}])
 
     main_function(150,["COLES","WOOLWORTHS"],[{"name": 'carrot', "min_amount": '10'}, {"name": 'banana', "min_amount": '2'},{"name": 'fruit cake', "min_amount": '2'},{"name": 'marshmallow', "min_amount": '2'},{"name": 'peas', "min_amount": '2'}])
+
     '''
     main_function(100,["COLES","WOOLWORTHS"],[{"name": 'Apple', "min_amount": '10'}, {"name": 'Orange', "min_amount": '2'}])
 '''
