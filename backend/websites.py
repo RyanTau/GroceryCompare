@@ -205,8 +205,10 @@ def main_function(budget, companies, products):
                 for x in products:
                     prod = x['name']
                     TPQI = coles(prod,json_out,driver)
+                    if TPQI == []:
+                        continue
                     #print(TPQI)
-                    price = TPQI[0][1]
+                    #price = TPQI[0][1]
                     json_out["COLES"][prod] = TPQI[0]
             elif company == "WOOLWORTHS":
                 json_out["WOOLWORTHS"] = {}
@@ -214,7 +216,9 @@ def main_function(budget, companies, products):
                     prod = x['name']
                     TPQI = woolworth(prod,json_out,driver)
                     print(TPQI, "THIS THIS")
-                    price = TPQI[0][1]
+                    if TPQI == []:
+                        continue
+                    #price = TPQI[0][1]
                     #print(TPQI)
                     json_out["WOOLWORTHS"][prod] = TPQI[0]
 
