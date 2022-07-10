@@ -5,7 +5,7 @@ The user inputs their budget, the stores they want to select from (Woolworths an
 
 ### Installation
 
-git clone https://github.com/RyanTau/GroceryCompare.git \n
+git clone https://github.com/RyanTau/GroceryCompare.git
 pip install -r requirements.txt
 
 Make sure your Chrome version is 103
