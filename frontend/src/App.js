@@ -12,6 +12,7 @@ function App() {
 
   return (
     <div>
+      <h1>hi</h1>
       <BrowserRouter>
         <Routes>
           <Route path="" element={<Home />}></Route>

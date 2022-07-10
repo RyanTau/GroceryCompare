@@ -10,7 +10,7 @@ const checkBoxStyle = {
 // # input['companies'] - ['COLES', 'WOOLWORTHS']
 // # input['products'] - [{name: 'carrot', min_amount: '10'}, {name: 'bananna', min_amount: '2'}]
 
-const Input = ( updateData ) => {
+const Input = ({ setData }) => {
   const [items, setItems] = React.useState([{name: "", min_amount: 0}]);
   const [budget, setBudget] = React.useState(0);
   const [coles, setColes] = React.useState(false);
@@ -73,7 +73,8 @@ const Input = ( updateData ) => {
     if (r.ok) {
       const data = await r.json();
       console.log(data);
-      updateData(data);
+      console.log(setData);
+      setData(data);
     } else {
       console.log('Uncaught Error');
     }
@@ -93,7 +94,7 @@ const Input = ( updateData ) => {
 
   return (
     <>
-      <h1>Input Calculator L</h1>
+      <h1>Input Calculator AAA</h1>
       <p>Set budget, current budget = {budget}</p>
       <input type="number" onChange={e => setBudget(e.target.value)}></input>
       <div style={checkBoxStyle}>

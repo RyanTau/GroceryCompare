@@ -39,13 +39,13 @@ def echo():
 def getProducts():
     # Json package
     input = request.get_json()
-    print(input)
-    return dumps({
-        'budget': input['budget'],
-        'companies': input['companies'],
-        'products': input['products']
-    })
-    # main_function(input['budget'], input['companies'], input['products'])
+    return dumps(
+        main_function(input['budget'], input['companies'], input['products'])
+        # 'budget': input['budget'],
+        # 'companies': input['companies'],
+        # 'products': input['products']
+    )
+   
     # Insert starter function in the pink curly brackets
     # return dumps(main_function(input['budget'], input['companies'], input['products']))
 

@@ -73,6 +73,8 @@ def woolworth(search,json_out,driver,num_results=1):
     iterator = 0
     for i in out:
         title = re.search(r'(.*)\n', i)
+        if (title == None):
+            continue
         title= title.group(1).strip(" Each")
         #print(i)
         try:
