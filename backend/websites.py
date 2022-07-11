@@ -262,7 +262,7 @@ def main_function(budget, companies, products):
             final_out = json_out
     final_out["USED"] = round(used,2)
     if budget - used < 0:
-        unused = -1q
+        unused = -1
     else:
         unused = budget - used
     final_out["UNUSED"] = round(unused,2)
